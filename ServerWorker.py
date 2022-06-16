@@ -8,7 +8,7 @@ class ServerWorker:
 	SETUP = 'SETUP'
 	PLAY = 'PLAY'
 	PAUSE = 'PAUSE'
-	TEARDOWN = 'TEARDOWN'
+	TEARDOWN = 'STOP'
 	
 	INIT = 0
 	READY = 1
@@ -89,7 +89,7 @@ class ServerWorker:
 		# Process PAUSE request
 		elif requestType == self.PAUSE:
 			if self.state == self.PLAYING:
-				print ("PROCESSING P A U S E\n")
+				print ("PROCESSING PAUSE\n")
 				self.state = self.READY
 				
 				self.clientInfo['event'].set()
@@ -98,7 +98,7 @@ class ServerWorker:
 		
 		# Process TEARDOWN request
 		elif requestType == self.TEARDOWN:
-			print ("PROCESSING TEARDOWN\n")
+			print ("PROCESSING STOP\n")
 
 			self.clientInfo['event'].set()
 			

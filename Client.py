@@ -14,7 +14,7 @@ class Client:
 	SETUP_STR = 'SETUP'
 	PLAY_STR = 'PLAY'
 	PAUSE_STR = 'PAUSE'
-	TEARDOWN_STR = 'TEARDOWN'
+	TEARDOWN_STR = 'STOP'
 	INIT = 0
 	READY = 1
 	PLAYING = 2
@@ -68,7 +68,7 @@ class Client:
 		
 		# Create Teardown button
 		self.teardown = Button(self.master, width=20, padx=3, pady=3)
-		self.teardown["text"] = "Teardown"
+		self.teardown["text"] = "Stop"
 		self.teardown["command"] =  self.exitClient
 		self.teardown.grid(row=1, column=3, padx=2, pady=2)
 		
@@ -105,14 +105,12 @@ class Client:
 		"""Listen for RTP packets."""
 		while True:
 			try:
-				print("LISTENING...")
 				data = self.rtpSocket.recv(20480)
 				if data:
 					rtpPacket = RtpPacket()
 					rtpPacket.decode(data)
 					
 					currFrameNbr = rtpPacket.seqNum()
-					print ("CURRENT SEQUENCE NUM: " + str(currFrameNbr))
 										
 					if currFrameNbr > self.frameNbr: # Discard the late packet
 						self.frameNbr = currFrameNbr
@@ -272,7 +270,7 @@ class Client:
 		# Create a new datagram socket to receive RTP packets from the server
 		self.rtpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)      	
 		# Set the timeout value of the socket to 0.5sec
-		self.rtpSocket.settimeout(0.5)
+		self.rtpSocket.settimeout(0.2)
 		try:
 			# Bind the socket to the address using the RTP port given by the client user.
 			self.state=self.READY
@@ -283,7 +281,7 @@ class Client:
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
 		self.pauseMovie()
-		if messagebox.askokcancel("Quit?", "Are you sure you want to quit?"):
+		if messagebox.askokcancel("Quit?", "Are you sure?"):
 			self.exitClient()
 		else: # When the user presses cancel, resume playing.
 			self.playMovie()
